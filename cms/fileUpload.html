@@ -1,0 +1,80 @@
+<script src="assets/js/angular.min.js"></script>
+<!-- shim is needed to support non-HTML5 FormData browsers (IE8-9)-->
+<script src="assets/js/ng-file-upload-shim.min.js"></script> 
+<script src="assets/js/ng-file-upload.min.js"></script> 
+<style type="text/css">
+.button {
+    -moz-appearance: button;
+    /* Firefox */
+    -webkit-appearance: button;
+    /* Safari and Chrome */
+    padding: 10px;
+    margin: 10px;
+    width: 70px;
+}
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    width: 200px;
+    height: 65px;
+    text-align: center;
+    padding-top: 25px;
+    margin: 10px;
+}
+.dragover {
+    border: 5px dashed blue;
+}</style>
+<div ng-app="fileUpload" ng-controller="MyCtrl">Username
+    <input type="text" ng-model="username"></br></br>
+    <input type="checkbox" ng-model="multiple">upload multiple file</br></br>
+    watching model:
+    <div class="button" ngf-select ng-model="files" ngf-multiple="multiple">Select File</div>
+    on file change:
+    <div class="button" ngf-select ngf-change="upload($files)" ngf-multiple="multiple">Select File</div>
+    Drop File:
+    <div ngf-drop ngf-select ng-model="files" class="drop-box" 
+        ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
+        accept="image/*,application/pdf">Drop pdfs or images here or click to upload</div>
+    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+    Files:
+    <ul>
+        <li ng-repeat="f in files" style="font:smaller">{{f.name}}</li>
+    </ul>
+    Upload Log:
+    <pre>{{log}}</pre>
+</div>
+
+<script type="text/javascript">
+//inject angular file upload directives and services.
+var app = angular.module('fileUpload', ['ngFileUpload']);
+
+app.controller('MyCtrl', ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
+    $scope.$watch('files', function () {
+        $scope.upload($scope.files);
+    });
+    $scope.log = '';
+
+    $scope.upload = function (files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                Upload.upload({
+                    url: 'upload.php',
+                    fields: {
+                        'username': $scope.username
+                    },
+                    file: file
+                }).progress(function (evt) {
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    $scope.log = 'progress: ' + progressPercentage + '% ' +
+                                evt.config.file.name + '\n' + $scope.log;
+                }).success(function (data, status, headers, config) {
+                    $timeout(function() {
+                        $scope.log = 'file: ' + config.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
+                    });
+                });
+            }
+        }
+    };
+}]);
+</script>

@@ -1,0 +1,132 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" dir="ltr">
+<html>
+   <head>
+      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.min.js"></script>
+      <title>Le plus grand faible des hommes, c'est l'amour qu'ils ont de la vie.</title>
+   </head>
+   <body ng-app="myapp" ng-init="countries=[{firstname:'ammar', lastname:'khan'},{firstname:'Harsh', lastname:'singh'}]">
+      <p><a href="#addStudent">Add Student</a></p>
+      <p><a href="#viewStudents">View Students</a></p>
+      <div ng-view></div>
+      <script type="text/ng-template" id="addStudent.htm">
+         <h2>Welcome {{helloTo.title}}</h2>
+         <p>Enter your Name: <input type="text" ng-model="name"></p>
+         <p>Hello <span ng-bind="name"></span>!</p>
+         <p>Afin que la France vous accueille dans les meilleures conditions, renseignez-vous. Si vous n'0tes pas un ressortissant de l'UE, en règle générale, un visa est nécessaire. Mais la France simplifie désormais la délivrance des visas "de circulation", valables de six mois à cinq ans, pour les "talents étrangers". Un nombre important de bourses est alloué chaque année par le ministère des Affaires étrangers aux étudiants étrangers. Un "Guichet unique" vous accueille dans la plupart des universités afin de simplifier vos démarches. Pour une installation en France de plus de trois mois, vous pouvez ouvrir un compte bancaire dès votre arrivée.</p>
+         <ul>
+            <li ng-repeat="country in countries">
+               Hello {{ country.firstname }} {{ country.lastname}}!
+            </li>
+         </ul>
+      </script>
+      <script type="text/ng-template" id="viewStudents.htm">
+         Enter first name: <input type="text" ng-model="student.firstName"><br><br>
+         Enter last name: <input type="text" ng-model="student.lastName"><br>
+         <br>
+         You are entering: {{student.fullName()}}
+         <table border="0">
+            <tr>
+               <td><input type="checkbox" ng-model="enableDisableButton">Disable Button</td>
+               <td><button ng-disabled="enableDisableButton">Click Me!</button></td>
+            </tr>
+            <tr>
+               <td><input type="checkbox" ng-model="showHide1">Show Button</td>
+               <td><button ng-show="showHide1">Click Me!</button></td>
+            </tr>
+            <tr>
+               <td><input type="checkbox" ng-model="showHide2">Hide Button</td>
+               <td><button ng-hide="showHide2">Click Me!</button></td>
+            </tr>
+            <tr>
+               <td><p>Total click: {{ clickCounter }}</p></td>
+               <td><button ng-click="clickCounter = clickCounter + 1">Click Me!</button></td>
+            </tr>
+         </table>
+         <form name="studentForm" novalidate>
+            <table border="0">
+               <tr>
+                  <td>Enter first name:</td>
+                  <td><input name="firstname" type="text" ng-model="firstName" required>
+                     <span style="color:red" ng-show="studentForm.firstname.$dirty && studentForm.firstname.$invalid">
+                        <span ng-show="studentForm.firstname.$error.required">First Name is required.</span>
+                     </span>
+                  </td>
+               </tr>
+               <tr>
+                  <td>Enter last name: </td>
+                  <td><input name="lastname"  type="text" ng-model="lastName" required>
+                     <span style="color:red" ng-show="studentForm.lastname.$dirty && studentForm.lastname.$invalid">
+                        <span ng-show="studentForm.lastname.$error.required">Last Name is required.</span>
+                     </span>
+                  </td>
+               </tr>
+               <tr>
+                  <td>Email: </td>
+                  <td><input name="email" type="email" ng-model="email" length="100" required>
+                  <span style="color:red" ng-show="studentForm.email.$dirty && studentForm.email.$invalid">
+                        <span ng-show="studentForm.email.$error.required">Email is required.</span>
+                       <span ng-show="studentForm.email.$error.email">Invalid email address.</span>
+                     </span>
+                  </td>
+               </tr>
+               <tr>
+                  <td><button ng-click="reset()">Reset</button></td>
+                  <td><button 
+                  ng-disabled="studentForm.firstname.$dirty && studentForm.firstname.$invalid ||
+                          studentForm.lastname.$dirty && studentForm.lastname.$invalid ||
+                          studentForm.email.$dirty && studentForm.email.$invalid"
+                  ng-click="submit()">Submit</button>
+                  </td>
+               </tr>
+            </table>
+         </form>
+      </script>
+      <script>
+         /* ===mainApp.js ==== */
+         var mainApp = angular.module("myapp", ['ngRoute']);
+         mainApp.config(['$routeProvider',
+            function($routeProvider) {
+               $routeProvider.
+                  when('/addStudent', {
+                     templateUrl: 'addStudent.htm',
+                     controller: 'HelloController'
+                  }).
+                  when('/viewStudents', {
+                     templateUrl: 'viewStudents.htm',
+                     controller: 'studentController'
+                  }).
+                  otherwise({
+                     redirectTo: '/addStudent'
+                  });
+            }]);
+
+         mainApp.controller('AddStudentController', function($scope) {
+            $scope.message = "This page will be used to display add student form";
+         });
+
+         mainApp.controller('ViewStudentsController', function($scope) {
+            $scope.message = "This page will be used to display all the students";
+         });
+         /* ================= */
+         mainApp.controller("HelloController", function($scope) {
+            $scope.helloTo = {};
+            $scope.helloTo.title = "My World";
+         });
+         
+         mainApp.controller('studentController', function($scope) {
+            $scope.student = {
+               firstName: "Mahesh",
+               lastName: "Parashar",
+               fullName: function() {
+                  var studentObject;
+                  studentObject = $scope.student;
+                  return studentObject.firstName + " " + studentObject.lastName;
+               }
+            };
+         });
+         
+      </script>
+   </body>
+</html>
+

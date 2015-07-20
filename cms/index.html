@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+   	<head>
+	   	<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	   	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+	   	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+	 	<style type="text/css">
+.button {
+    -moz-appearance: button;
+    /* Firefox */
+    -webkit-appearance: button;
+    /* Safari and Chrome */
+    padding: 10px;
+    margin: 10px;
+    width: 70px;
+}
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    width: 200px;
+    height: 65px;
+    text-align: center;
+    padding-top: 25px;
+    margin: 10px;
+}
+.dragover {
+    border: 5px dashed blue;
+}</style>  	
+   	</head>
+   	<body ng-app="cms" ng-cloak>
+   		<nav class="navbar navbar-inverse navbar-fixed-top">
+	      <div class="container-fluid">
+	        <div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+	          	<a class="navbar-brand" href="#">CMS</a>
+	        </div>
+	        <div id="navbar" class="navbar-collapse collapse">
+	          	<ul class="nav navbar-nav navbar-right">
+		            <li><a href="#">Dashboard</a></li>
+		            <li><a href="#">Settings</a></li>
+		            <li><a href="#">Profile</a></li>
+		            <li><a href="#">Help</a></li>
+	          	</ul>
+	          	<form class="navbar-form navbar-right">
+	            	<input type="text" class="form-control" placeholder="Search...">
+	          	</form>
+	        </div>
+	      </div>
+	    </nav>
+	    
+	   	<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-3 col-md-2 sidebar">
+					<ul class="nav nav-sidebar">
+						<li class="active"><a href="#sections">Section <span class="sr-only">(current)</span></a></li>
+						<li><a href="#sections_add">Reports</a></li>
+						<li><a href="#sections_edit">Analytics</a></li>
+						<li><a href="#export">Export</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+				<div ng-view></div>
+
+				<script type="text/ng-template" id="sections.htm">
+					<div class="row">
+						<div class="col-sm-4">
+							<h2 class="sub-header">Sections List</h2>
+						</div>
+						<div class="col-sm-8">
+							<a href="#sections_add" class="btn pull-right">Section Add</a>
+							<!-- <a href="#sections_edit">Section Edit</a> -->
+						</div>
+					</div>
+					<div class="row">
+						<div class="alert alert-warning alert-dismissible" role="alert" ng-if="message == 'add-success'">
+						  	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						  	<strong>Success!</strong> Section Successfully Created.
+						</div>
+						<div class="alert alert-warning alert-dismissible" role="alert" ng-if="message == 'edit-success'">
+						  	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						  	<strong>Success!</strong> Section Successfully Edited.
+						</div>
+					</div>
+					<div class="table-responsive" ng-if="sections != 0">
+					    <table class="table table-striped">
+					      	<thead>
+						        <tr>
+									<th>#</th>
+									<th>Section Name</th>
+									<th>Action</th>
+								</tr>
+					      	</thead>
+					      	<tbody>
+					      	 	<tr class="animate-repeat" ng-repeat="section in sections">
+					      	 		<td>{{$index + 1}}</td>
+							      	<td>{{ section.section_name }}</td>
+							      	<td><a href="#sections_edit/{{section.section_id}}" >Edit</a></td>  
+						      	</tr>
+					       	</tbody>
+					    </table>
+					</div>
+					<div class="table-responsive" ng-if="sections == 0">
+					    No Any Section <a href="#sections_add">Please add the section.</a>
+					</div>
+				</script>
+				<script type="text/ng-template" id="sections_add.htm">
+					<div class="row">
+						<div class="col-sm-4">
+							<h2 class="sub-header">Create Section</h2>
+						</div>
+						<div class="col-sm-8">
+							<a href="#sections" class="btn pull-right"><< Back</a>
+							<!-- <a href="#sections_edit">Section Edit</a> -->
+						</div>
+					</div>
+				  	<form class="form-horizontal" novalidate>
+				  		<div class="form-group">
+				  			<lable for="section_name" class="col-sm-2 control-label">Section Name</lable>
+				  			<div class="col-sm-10">
+				  			<input class="form-control" type="text" name="section_name" ng-model="sections_add.section_name" id="section_name"/>
+				  			</div>
+			  			</div>
+		  			 	
+				  		<div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+						      <button type="submit" ng-click="update(sections_add)" class="btn btn-default">Submit</button>
+						    </div>
+					  	</div>
+				  	</form>
+				</script>
+				<script type="text/ng-template" id="sections_edit.htm">
+					<div class="row">
+						<div class="col-sm-4">
+							<h2 class="sub-header">Edit Section</h2>
+						</div>
+						<div class="col-sm-8">
+							<a href="#sections" class="btn pull-right"><< Back</a>
+							<!-- <a href="#sections_edit">Section Edit</a> -->
+						</div>
+					</div>
+				  	<form class="form-horizontal" novalidate>
+				  		<div class="form-group">
+				  			<lable for="section_name" class="col-sm-2 control-label">Section Name</lable>
+				  			<div class="col-sm-10">
+				  			<input class="form-control" type="text" name="section_name" ng-model="section_name"  id="section_name"/>
+				  			</div>
+			  			</div>
+				  		<div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+						      <button type="submit" ng-click="update(section_name)" class="btn btn-default">Submit</button>
+						    </div>
+					  	</div>
+				  	</form>
+				  	<pre>form = {{section_name}}</pre>
+				</script>
+				</div>
+				<!-- <div ng-include="'sections.htm'"></div>  -->
+			</div>
+		</div>
+		
+	    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <script src="assets/js/bootstrap.min.js"></script>
+	    <script src="assets/js/angular-1.4.3/angular.min.js"></script>
+		<script src="assets/js/angular-1.4.3/angular-route.js"></script>
+		<script src="assets/js/angular-1.4.3/angular-cookies.min.js">
+		<script src="assets/js/ng-file-upload-shim.min.js"></script> 
+		<script src="assets/js/ng-file-upload.min.js"></script> 
+     	<!--<script type="text/javascript" src="assets/js/sections.js"></script>-->
+	    <script type="text/javascript" src="assets/js/app.js"></script> 
+ 	</body>
+</html>
